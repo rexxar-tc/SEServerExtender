@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Management;
+using Sandbox.Game;
 using SEModAPIInternal.Support;
+using VRage.Plugins;
 
 namespace SEServerExtender
 {
@@ -112,8 +114,15 @@ namespace SEServerExtender
 		/// Main entry point of the application
 		/// </summary>
 		static void Main( string[ ] args )
-		{
-			FileTarget baseLogTarget = LogManager.Configuration.FindTargetByName( "BaseLog" ) as FileTarget;
+        {
+            SpaceEngineers.Game.SpaceEngineersGame.SetupPerGameSettings();
+            MyPlugins.RegisterGameAssemblyFile(MyPerGameSettings.GameModAssembly);
+            MyPlugins.RegisterGameObjectBuildersAssemblyFile(MyPerGameSettings.GameModObjBuildersAssembly);
+            MyPlugins.RegisterSandboxAssemblyFile(MyPerGameSettings.SandboxAssembly);
+            MyPlugins.RegisterSandboxGameAssemblyFile(MyPerGameSettings.SandboxGameAssembly);
+            MyPlugins.Load();
+
+            FileTarget baseLogTarget = LogManager.Configuration.FindTargetByName( "BaseLog" ) as FileTarget;
 			if ( baseLogTarget != null )
 			{
 				baseLogTarget.FileName = baseLogTarget.FileName.Render( new LogEventInfo { TimeStamp = DateTime.Now } );

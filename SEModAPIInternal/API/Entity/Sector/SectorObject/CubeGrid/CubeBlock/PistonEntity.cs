@@ -22,12 +22,12 @@ namespace SEModAPIInternal.API.Entity.Sector.SectorObject.CubeGrid.CubeBlock
 		public static string PistonNamespace = "Sandbox.Game.Entities.Blocks";
 		public static string PistonClass = "MyPistonBase";
 
-		public static string PistonGetVelocityMethod = "get_Velocity";
-		public static string PistonSetVelocityMethod = "set_Velocity";
-		public static string PistonGetMinLimitMethod = "get_MinLimit";
-		public static string PistonSetMinLimitMethod = "set_MinLimit";
-		public static string PistonGetMaxLimitMethod = "get_MaxLimit";
-		public static string PistonSetMaxLimitMethod = "set_MaxLimit";
+		public static string PistonGetVelocityMethod = "Velocity";
+		public static string PistonSetVelocityMethod = "Velocity";
+		public static string PistonGetMinLimitMethod = "MinLimit";
+		public static string PistonSetMinLimitMethod = "MinLimit";
+		public static string PistonGetMaxLimitMethod = "MaxLimit";
+		public static string PistonSetMaxLimitMethod = "MaxLimit";
 		public static string PistonGetNetworkManagerMethod = "get_SyncObject";
 
 		public static string PistonTopBlockEntityIdField = "m_topBlockId";
@@ -238,12 +238,12 @@ namespace SEModAPIInternal.API.Entity.Sector.SectorObject.CubeGrid.CubeBlock
 				if ( type == null )
 					throw new Exception( "Could not find internal type for PistonEntity" );
 
-				result &= Reflection.HasMethod( type, PistonGetVelocityMethod );
-				result &= Reflection.HasMethod( type, PistonSetVelocityMethod );
-				result &= Reflection.HasMethod( type, PistonGetMinLimitMethod );
-				result &= Reflection.HasMethod( type, PistonSetMinLimitMethod );
-				result &= Reflection.HasMethod( type, PistonGetMaxLimitMethod );
-				result &= Reflection.HasMethod( type, PistonSetMaxLimitMethod );
+				result &= Reflection.HasField( type, PistonGetVelocityMethod );
+				result &= Reflection.HasField( type, PistonSetVelocityMethod );
+				result &= Reflection.HasField( type, PistonGetMinLimitMethod );
+				result &= Reflection.HasField( type, PistonSetMinLimitMethod );
+				result &= Reflection.HasField( type, PistonGetMaxLimitMethod );
+				result &= Reflection.HasField( type, PistonSetMaxLimitMethod );
 				result &= Reflection.HasMethod( type, PistonGetNetworkManagerMethod );
 
 				result &= Reflection.HasField( type, PistonTopBlockEntityIdField );
@@ -284,7 +284,7 @@ namespace SEModAPIInternal.API.Entity.Sector.SectorObject.CubeGrid.CubeBlock
 
 		protected float GetPistonVelocity( )
 		{
-			Object rawResult = InvokeEntityMethod( ActualObject, PistonGetVelocityMethod );
+			Object rawResult = GetEntityFieldValue( ActualObject, PistonGetVelocityMethod );
 			if ( rawResult == null )
 				return 0;
 			float result = (float)rawResult;
@@ -293,13 +293,13 @@ namespace SEModAPIInternal.API.Entity.Sector.SectorObject.CubeGrid.CubeBlock
 
 		protected void SetPistonVelocity( )
 		{
-			InvokeEntityMethod( ActualObject, PistonSetVelocityMethod, new object[ ] { m_velocity } );
+            SetEntityFieldValue( ActualObject, PistonSetVelocityMethod, m_velocity);
 			m_networkManager.BroadcastVelocity( m_velocity );
 		}
 
 		protected float GetPistonMinLimit( )
 		{
-			Object rawResult = InvokeEntityMethod( ActualObject, PistonGetMinLimitMethod );
+			Object rawResult = GetEntityFieldValue( ActualObject, PistonGetMinLimitMethod );
 			if ( rawResult == null )
 				return 0;
 			float result = (float)rawResult;
@@ -308,13 +308,13 @@ namespace SEModAPIInternal.API.Entity.Sector.SectorObject.CubeGrid.CubeBlock
 
 		protected void SetPistonMinLimit( )
 		{
-			InvokeEntityMethod( ActualObject, PistonSetMinLimitMethod, new object[ ] { m_minLimit } );
+            SetEntityFieldValue( ActualObject, PistonSetMinLimitMethod, m_minLimit );
 			m_networkManager.BroadcastVelocity( m_minLimit );
 		}
 
 		protected float GetPistonMaxLimit( )
 		{
-			Object rawResult = InvokeEntityMethod( ActualObject, PistonGetMaxLimitMethod );
+			Object rawResult = GetEntityFieldValue( ActualObject, PistonGetMaxLimitMethod );
 			if ( rawResult == null )
 				return 0;
 			float result = (float)rawResult;
@@ -323,7 +323,7 @@ namespace SEModAPIInternal.API.Entity.Sector.SectorObject.CubeGrid.CubeBlock
 
 		protected void SetPistonMaxLimit( )
 		{
-			InvokeEntityMethod( ActualObject, PistonSetMaxLimitMethod, new object[ ] { m_maxLimit } );
+            SetEntityFieldValue( ActualObject, PistonSetMaxLimitMethod, m_maxLimit);
 			m_networkManager.BroadcastVelocity( m_maxLimit );
 		}
 

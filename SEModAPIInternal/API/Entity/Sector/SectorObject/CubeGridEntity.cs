@@ -546,7 +546,7 @@ namespace SEModAPIInternal.API.Entity.Sector.SectorObject
 				MyObjectBuilder_CubeBlock objectBuilder = _cubeBlockToAddRemove.ObjectBuilder;
 				MyCubeBlockDefinition blockDef = MyDefinitionManager.Static.GetCubeBlockDefinition( objectBuilder );
 
-				NetworkManager.BroadcastAddCubeBlock( _cubeBlockToAddRemove );
+				//NetworkManager.BroadcastAddCubeBlock( _cubeBlockToAddRemove );
 
 				Object result = InvokeEntityMethod( BackingObject, CubeGridAddCubeBlockMethod, new object[ ] { objectBuilder, true, blockDef } );
 				_cubeBlockToAddRemove.BackingObject = result;

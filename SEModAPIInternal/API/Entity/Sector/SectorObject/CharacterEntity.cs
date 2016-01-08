@@ -436,7 +436,8 @@ namespace SEModAPIInternal.API.Entity.Sector.SectorObject
 			{
 				float capacity = Battery.CurrentCapacity;
 				Object battery = InternalGetCharacterBattery( );
-				InvokeEntityMethod( battery, CharacterBatterySetBatteryCapacityMethod, new object[ ] { capacity } );
+			    ApplicationLog.BaseLog.Info($"InternalUpdateBatteryLevel{battery.GetType()}");
+                InvokeEntityMethod( battery, CharacterBatterySetBatteryCapacityMethod, new object[ ] { capacity } );
 			}
 			catch ( Exception ex )
 			{

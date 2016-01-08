@@ -160,3 +160,7 @@ local/*
 
 Docs/html
 Docs/latex
+/SEModAPI/AssemblyFileVersion.cs
+/SEModAPIExtensions/AssemblyFileVersion.cs
+/SEModAPIInternal/AssemblyFileVersion.cs
+/SEServerExtender/AssemblyFileVersion.cs

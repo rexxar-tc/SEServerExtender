@@ -313,7 +313,8 @@ namespace SEModAPI.API
 						result.Add( s.ServiceName );
 					}
 				}
-			}
+                result.Add("debug");
+            }
 			catch ( Win32Exception win32Exception )
 			{
 				BaseLog.Error( "Could not get instance list. {0}", win32Exception );

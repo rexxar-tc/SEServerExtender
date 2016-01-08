@@ -97,11 +97,6 @@ namespace SEModAPIInternal.API.Server
 		private const string RespawnMsgRespawnShipId = "RespawnShipId";
 		private const string RespawnMsgPlayerSerialId = "PlayerSerialId";
 
-		private const string MySyncCharacterClass = "MySyncCharacter";
-		private const string AttachToCockpitMsg = "AttachToCockpitMsg";
-		private const string AttachCharacterId = "CharacterEntityId";
-		private const string AttachCockpitId = "CockpitEntityId";
-
 		private const string ControllableClass = "MySyncControllableEntity";
 		private const string UseMsg = "UseObject_UseMsg";
 		private const string UseMsgEntityId = "EntityId";
@@ -193,16 +188,6 @@ namespace SEModAPIInternal.API.Server
 				result &= Reflection.HasField( nestedCreateType, SendCreateCompressedMsgObjectBuilders );
 				result &= Reflection.HasField( nestedCreateType, SendCreateCompressedMsgBuilderLengths );
 
-				Type type6 = SandboxGameAssemblyWrapper.Instance.GetAssemblyType( MultiplayerNamespace, MySyncCharacterClass );
-				if ( type6 == null )
-					throw new TypeLoadException( "Could not find internal type for MySyncCharacterClass" );
-
-				Type attachMsgType = type6.GetNestedType( AttachToCockpitMsg, BindingFlags.NonPublic | BindingFlags.Public );
-				if ( attachMsgType == null )
-					throw new TypeLoadException( "Could not find internal type for AttachToCockpitMsg" );
-
-				result &= Reflection.HasField( attachMsgType, AttachCharacterId );
-				result &= Reflection.HasField( attachMsgType, AttachCockpitId );
 
 				Type controllableClassType = typeof ( MySyncControllableEntity );
 
@@ -414,21 +399,6 @@ namespace SEModAPIInternal.API.Server
 			SendMessage( respawnMsg, userId, typeof ( MyPlayerCollection.RespawnMsg ), 3 );
 		}
 
-		public static void AttachToCockpit( long characterId, long cockpitId, ulong steamId )
-		{
-			Type syncCharacterClassType = SandboxGameAssemblyWrapper.Instance.GetAssemblyType( MultiplayerNamespace, MySyncCharacterClass );
-			Type attachMsgType = syncCharacterClassType.GetNestedType( AttachToCockpitMsg, BindingFlags.NonPublic | BindingFlags.Public );
-
-			FieldInfo attachCharacterId = attachMsgType.GetField( AttachCharacterId );
-			FieldInfo attachCockpitId = attachMsgType.GetField( AttachCockpitId );
-
-			object attachMsg = Activator.CreateInstance( attachMsgType );
-
-			attachCharacterId.SetValue( attachMsg, characterId );
-			attachCockpitId.SetValue( attachMsg, cockpitId );
-
-			SendMessage( attachMsg, steamId, attachMsgType, 1 );
-		}
 
 		public static void UseCockpit( long characterId, long cockpitId )
 		{

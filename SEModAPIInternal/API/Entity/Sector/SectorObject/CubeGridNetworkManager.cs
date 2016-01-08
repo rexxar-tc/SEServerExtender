@@ -75,15 +75,16 @@ namespace SEModAPIInternal.API.Entity.Sector.SectorObject
 		public static string CubeGridNetManagerBroadcastCubeBlockBuildIntegrityValuesMethod = "SendIntegrityChanged";
 
 		public static string CubeGridNetManagerBroadcastCubeBlockFactionDataMethod = "ChangeOwnerRequest";
-		public static string CubeGridNetManagerBroadcastCubeBlockRemoveListsMethod = "SendRemovedBlocks";
-		public static string CubeGridNetManagerBroadcastAddCubeBlockMethod = "BuildBlocksSuccess";
+		public static string CubeGridNetManagerBroadcastCubeRemovedBlocksWithIdsMethod = "SendRemovedBlocksWithIds";
+		//public static string CubeGridNetManagerBroadcastAddCubeBlockMethod = "BuildBlocksSuccess";
 
 		//Fields
-		public static string CubeGridNetManagerCubeBlocksToDestroyField = "m_destroyBlockQueue";
+		//public static string CubeGridNetManagerCubeBlocksToDestroyField = "m_destroyBlockQueue";
 
 		//////////////////////////////////////////////////////////////////
 
-		public static string CubeGridIntegrityChangeEnumNamespace = string.Format( "{0}.{1}", CubeGridEntity.CubeGridNamespace, CubeGridEntity.CubeGridClass );
+		public static string CubeGridIntegrityChangeEnumNamespace =
+		    $"{CubeGridEntity.CubeGridNamespace}.{CubeGridEntity.CubeGridClass}";
 		public static string CubeGridIntegrityChangeEnumClass = "MyIntegrityChangeEnum";
 
 		#endregion "Attributes"
@@ -130,9 +131,9 @@ namespace SEModAPIInternal.API.Entity.Sector.SectorObject
 				bool result = true;
 				result &= Reflection.HasMethod( type, CubeGridNetManagerBroadcastCubeBlockBuildIntegrityValuesMethod );
 				result &= Reflection.HasMethod( type, CubeGridNetManagerBroadcastCubeBlockFactionDataMethod );
-				result &= Reflection.HasMethod( type, CubeGridNetManagerBroadcastCubeBlockRemoveListsMethod );
-				result &= Reflection.HasMethod( type, CubeGridNetManagerBroadcastAddCubeBlockMethod );
-				result &= Reflection.HasField( type, CubeGridNetManagerCubeBlocksToDestroyField );
+				result &= Reflection.HasMethod( type, CubeGridNetManagerBroadcastCubeRemovedBlocksWithIdsMethod );
+				//result &= Reflection.HasMethod( type, CubeGridNetManagerBroadcastAddCubeBlockMethod );
+				//result &= Reflection.HasField( type, CubeGridNetManagerCubeBlocksToDestroyField );
 
 				Type type2 = CubeGridEntity.InternalType.GetNestedType( CubeGridIntegrityChangeEnumClass );
 				if ( type2 == null )
@@ -214,55 +215,55 @@ namespace SEModAPIInternal.API.Entity.Sector.SectorObject
 
 		public void BroadcastCubeBlockRemoveLists( )
 		{
-			BaseObject.InvokeEntityMethod( m_netManager, CubeGridNetManagerBroadcastCubeBlockRemoveListsMethod );
+			BaseObject.InvokeEntityMethod( m_netManager, CubeGridNetManagerBroadcastCubeRemovedBlocksWithIdsMethod );
 		}
 
-		public void BroadcastAddCubeBlock( CubeBlockEntity cubeBlock )
-		{
-			try
-			{
-				Type packedStructType = CubeGridEntity.InternalType.GetNestedType( CubeGridEntity.CubeGridPackedCubeBlockClass );
-				Object packedStruct = Activator.CreateInstance( packedStructType );
-				MyCubeBlockDefinition def = MyDefinitionManager.Static.GetCubeBlockDefinition( cubeBlock.ObjectBuilder );
+		//public void BroadcastAddCubeBlock( CubeBlockEntity cubeBlock )
+		//{
+		//	try
+		//	{
+		//		Type packedStructType = CubeGridEntity.InternalType.GetNestedType( CubeGridEntity.CubeGridPackedCubeBlockClass );
+		//		Object packedStruct = Activator.CreateInstance( packedStructType );
+		//		MyCubeBlockDefinition def = MyDefinitionManager.Static.GetCubeBlockDefinition( cubeBlock.ObjectBuilder );
 
-				//Set def id
-				BaseObject.SetEntityFieldValue( packedStruct, "35E024D9E3B721592FB9B6FC1A1E239A", (DefinitionIdBlit)def.Id );
+		//		//Set def id
+		//		BaseObject.SetEntityFieldValue( packedStruct, "35E024D9E3B721592FB9B6FC1A1E239A", (DefinitionIdBlit)def.Id );
 
-				//Set position
-				BaseObject.SetEntityFieldValue( packedStruct, "5C3938C9B8CED1D0057CCF12F04329AB", cubeBlock.Position );
+		//		//Set position
+		//		BaseObject.SetEntityFieldValue( packedStruct, "5C3938C9B8CED1D0057CCF12F04329AB", cubeBlock.Position );
 
-				//Set block size
-				BaseObject.SetEntityFieldValue( packedStruct, "0DDB53EB9299ECC9826DF9A47E5E4F38", new Vector3UByte( def.Size ) );
+		//		//Set block size
+		//		BaseObject.SetEntityFieldValue( packedStruct, "0DDB53EB9299ECC9826DF9A47E5E4F38", new Vector3UByte( def.Size ) );
 
-				//Set block margins
-				BaseObject.SetEntityFieldValue( packedStruct, "4045ED59A8C93DE0B41218EF2E947E55", new Vector3B( 0, 0, 0 ) );
-				BaseObject.SetEntityFieldValue( packedStruct, "096897446D5BD5243D3D6E5C53CE1772", new Vector3B( 0, 0, 0 ) );
+		//		//Set block margins
+		//		BaseObject.SetEntityFieldValue( packedStruct, "4045ED59A8C93DE0B41218EF2E947E55", new Vector3B( 0, 0, 0 ) );
+		//		BaseObject.SetEntityFieldValue( packedStruct, "096897446D5BD5243D3D6E5C53CE1772", new Vector3B( 0, 0, 0 ) );
 
-				//Set block margin scale
-				BaseObject.SetEntityFieldValue( packedStruct, "E28B9725868E18B339D1E0594EF14444", new Vector3B( 0, 0, 0 ) );
+		//		//Set block margin scale
+		//		BaseObject.SetEntityFieldValue( packedStruct, "E28B9725868E18B339D1E0594EF14444", new Vector3B( 0, 0, 0 ) );
 
-				//Set orientation
-				Quaternion rot;
-				cubeBlock.BlockOrientation.GetQuaternion( out rot );
-				BaseObject.SetEntityFieldValue( packedStruct, "F1AAFF5C8F200592F313BC7E02140A38", Base6Directions.GetForward( rot ) );
-				BaseObject.SetEntityFieldValue( packedStruct, "E80AA7B84131E39F9F88209A109EED59", Base6Directions.GetUp( rot ) );
+		//		//Set orientation
+		//		Quaternion rot;
+		//		cubeBlock.BlockOrientation.GetQuaternion( out rot );
+		//		BaseObject.SetEntityFieldValue( packedStruct, "F1AAFF5C8F200592F313BC7E02140A38", Base6Directions.GetForward( rot ) );
+		//		BaseObject.SetEntityFieldValue( packedStruct, "E80AA7B84131E39F9F88209A109EED59", Base6Directions.GetUp( rot ) );
 
-				//Set color
-				BaseObject.SetEntityFieldValue( packedStruct, "556976F2528411FF5F95FC75DC13FEED", ColorExtensions.PackHSVToUint( cubeBlock.ColorMaskHSV ) );
+		//		//Set color
+		//		BaseObject.SetEntityFieldValue( packedStruct, "556976F2528411FF5F95FC75DC13FEED", ColorExtensions.PackHSVToUint( cubeBlock.ColorMaskHSV ) );
 
-				object[ ] parameters = {
-					                       packedStruct,
-					                       new HashSet<Vector3UByte>(),
-					                       cubeBlock.EntityId,
-					                       MyRandom.Instance.CreateRandomSeed()
-				                       };
-				BaseObject.InvokeEntityMethod( m_netManager, CubeGridNetManagerBroadcastAddCubeBlockMethod, parameters );
-			}
-			catch ( Exception ex )
-			{
-				ApplicationLog.BaseLog.Error( ex );
-			}
-		}
+		//		object[ ] parameters = {
+		//			                       packedStruct,
+		//			                       new HashSet<Vector3UByte>(),
+		//			                       cubeBlock.EntityId,
+		//			                       MyRandom.Instance.CreateRandomSeed()
+		//		                       };
+		//		BaseObject.InvokeEntityMethod( m_netManager, CubeGridNetManagerBroadcastAddCubeBlockMethod, parameters );
+		//	}
+		//	catch ( Exception ex )
+		//	{
+		//		ApplicationLog.BaseLog.Error( ex );
+		//	}
+		//}
 
 		protected static void RegisterPacketHandlers( )
 		{
